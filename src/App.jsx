@@ -6,19 +6,18 @@ import { weddingData } from './data/weddingData';
 
 // Lazy loaded page components for optimal performance
 const Home = lazy(() => import('./pages/Home'));
-const Invitation = lazy(() => import('./pages/Invitation'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 export default function App() {
   return (
     <BrowserRouter>
-      {/* Global Singleton Background Music Player (never unmounts across routes) */}
+      {/* Global Singleton Background Music Player */}
       <MusicPlayer youtubeId={weddingData.song.youtubeId} />
 
       <Suspense fallback={<LoadingScreen />}>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/invitation" element={<Invitation />} />
+          <Route path="/invitation" element={<Navigate to="/" replace />} />
           <Route path="/404" element={<NotFound />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

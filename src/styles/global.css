@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  scroll-behavior: smooth;
+}
+
 :root {
   --color-ivory: #F7F3EB;
   --color-cream: #FFFDF8;
@@ -15,34 +19,55 @@
 
 /* Custom Scrollbar for Luxury Aesthetics */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #1C1916;
+  background: #14110E;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #8C713F;
+  background: linear-gradient(180deg, #8C713F, #D4BE8D, #8C713F);
   border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #B69A65;
+  background: #E5C578;
 }
 
 /* Base Body Styles */
 body {
   margin: 0;
   padding: 0;
-  background-color: #1C1916;
-  color: #29251F;
+  background-color: #0F0D0B;
+  color: #FFFDF8;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
-  user-select: none;
+}
+
+/* 3D Perspective Utilities */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.perspective-1500 {
+  perspective: 1500px;
+}
+
+.perspective-2000 {
+  perspective: 2000px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
 }
 
 /* Typography Utility Classes */
@@ -60,7 +85,7 @@ body {
 
 /* Luxury Foil Effects */
 .gold-foil-text {
-  background: linear-gradient(135deg, #A88647 0%, #F5E8C7 35%, #D4BE8D 55%, #8C713F 100%);
+  background: linear-gradient(135deg, #DFBA73 0%, #FFF4D8 35%, #D4BE8D 55%, #9E7D3F 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-block;
@@ -70,30 +95,61 @@ body {
   border-image: linear-gradient(135deg, #B69A65, #FFF2D1, #8C713F) 1;
 }
 
-/* Elegant Textured Paper Effect */
-.bg-luxury-paper {
-  background-color: #FFFDF8;
-  background-image: 
-    radial-gradient(#81786B 0.5px, transparent 0.5px),
-    linear-gradient(to bottom, #FFFDF8 0%, #F7F3EB 100%);
-  background-size: 20px 20px, 100% 100%;
+.gold-glow {
+  box-shadow: 0 0 35px rgba(212, 190, 141, 0.25);
 }
 
-.bg-cover-leather {
-  background-color: #241D17;
-  background-image: 
-    radial-gradient(circle at 50% 50%, rgba(182, 154, 101, 0.08) 0%, transparent 80%),
-    linear-gradient(145deg, #2E251E 0%, #1A1410 100%);
+.gold-glow-lg {
+  box-shadow: 0 0 60px rgba(212, 190, 141, 0.35);
 }
 
-/* Realistic Book Spine Effect */
-.book-spine-gradient {
-  background: linear-gradient(
-    90deg, 
-    rgba(0, 0, 0, 0.3) 0%, 
-    rgba(255, 255, 255, 0.1) 20%, 
-    rgba(0, 0, 0, 0.1) 50%, 
-    rgba(0, 0, 0, 0.4) 100%
-  );
+/* Glassmorphism Luxury Cards */
+.glass-gold {
+  background: rgba(28, 24, 20, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(182, 154, 101, 0.35);
+}
+
+.glass-gold-subtle {
+  background: rgba(22, 19, 16, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(182, 154, 101, 0.2);
+}
+
+.glass-card-light {
+  background: linear-gradient(145deg, rgba(255, 253, 248, 0.96) 0%, rgba(247, 243, 235, 0.92) 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(182, 154, 101, 0.4);
+}
+
+/* Ornate Border Corners */
+.ornate-border-corner {
+  position: relative;
+}
+
+.ornate-border-corner::before,
+.ornate-border-corner::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: #D4BE8D;
+  pointer-events: none;
+}
+
+.ornate-border-corner::before {
+  top: 6px;
+  left: 6px;
+  border-top: 2px solid;
+  border-left: 2px solid;
+}
+
+.ornate-border-corner::after {
+  bottom: 6px;
+  right: 6px;
+  border-bottom: 2px solid;
+  border-right: 2px solid;
 }
 
