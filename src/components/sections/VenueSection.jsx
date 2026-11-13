@@ -85,25 +85,29 @@ export default function VenueSection({ weddingData }) {
                 </div>
               </div>
 
-              {/* Right Column: 3D Visual Map Card Preview */}
-              <div className="w-full md:w-80 lg:w-96 h-64 sm:h-72 rounded-2xl overflow-hidden border-2 border-gold/40 shadow-xl relative bg-black/60 group cursor-pointer" onClick={handleOpenMaps}>
-                {/* Visual Map Backdrop */}
-                <div className="absolute inset-0 bg-[#1A1612] flex flex-col items-center justify-center p-6 text-center">
-                  <div className="w-16 h-16 rounded-full bg-gold/15 border-2 border-gold/50 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-gold-glow">
-                    <MapPin className="w-8 h-8 text-gold animate-bounce" />
-                  </div>
-                  <span className="font-display-luxury text-lg font-bold text-cream tracking-wide block mb-1">
-                    Ashoka Lodge
-                  </span>
-                  <span className="text-xs text-gold-light font-sans tracking-wider block">
-                    Kharagpur, West Bengal
-                  </span>
-                  <span className="text-[10px] text-muted-light mt-3 block px-3 py-1 rounded-full bg-white/5 border border-gold/20">
-                    Click to launch interactive Google Maps
-                  </span>
-                </div>
+              {/* Right Column: Embedded Small-Size Interactive Google Map */}
+              <div className="w-full md:w-80 lg:w-96 h-64 sm:h-72 rounded-2xl overflow-hidden border-2 border-gold/50 shadow-xl relative bg-black/70 flex flex-col group">
+                <iframe
+                  title="Ashoka Lodge Venue Location Map"
+                  src="https://maps.google.com/maps?q=Ashoka+Lodge,+Malancha+Road,+Kharagpur,+West+Bengal+721301&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen=""
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="w-full h-full rounded-2xl opacity-90 group-hover:opacity-100 transition-opacity"
+                />
 
-                <div className="absolute inset-0 bg-gold/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                {/* Floating Map Pin Badge */}
+                <div 
+                  onClick={handleOpenMaps}
+                  className="absolute bottom-2.5 right-2.5 px-3 py-1 rounded-full bg-black/85 backdrop-blur-md border border-gold/50 text-[10px] text-gold-light cursor-pointer hover:bg-gold/20 transition-colors flex items-center gap-1.5 shadow-lg select-none"
+                  title="Open in Google Maps App"
+                >
+                  <MapPin className="w-3 h-3 text-gold animate-bounce" />
+                  <span className="font-sans font-medium">Ashoka Lodge · Map</span>
+                </div>
               </div>
             </div>
           </TiltCard>
