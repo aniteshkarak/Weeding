@@ -44,12 +44,12 @@ export default function CoupleSection({ weddingData }) {
                 </div>
 
                 {/* Bride Photo with 3D Gold Frame */}
-                <div className="relative w-44 h-44 sm:w-52 sm:h-52 rounded-full p-2 bg-gradient-to-tr from-gold-dark via-gold to-gold-light shadow-gold-glow mb-5">
-                  <div className="w-full h-full rounded-full overflow-hidden bg-black/40 border-2 border-[#120F0D]">
+                <div className="relative w-48 h-56 sm:w-56 sm:h-64 rounded-3xl p-1.5 bg-gradient-to-tr from-gold-dark via-gold to-gold-light shadow-gold-glow mb-5 group">
+                  <div className="w-full h-full rounded-2xl overflow-hidden bg-black/40 border-2 border-[#120F0D]">
                     <img
                       src={weddingData.bride.photo}
                       alt={weddingData.bride.name}
-                      className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>
                 </div>
@@ -89,12 +89,12 @@ export default function CoupleSection({ weddingData }) {
                 </div>
 
                 {/* Groom Photo with 3D Gold Frame */}
-                <div className="relative w-44 h-44 sm:w-52 sm:h-52 rounded-full p-2 bg-gradient-to-tr from-gold-dark via-gold to-gold-light shadow-gold-glow mb-5">
-                  <div className="w-full h-full rounded-full overflow-hidden bg-black/40 border-2 border-[#120F0D]">
+                <div className="relative w-48 h-56 sm:w-56 sm:h-64 rounded-3xl p-1.5 bg-gradient-to-tr from-gold-dark via-gold to-gold-light shadow-gold-glow mb-5 group">
+                  <div className="w-full h-full rounded-2xl overflow-hidden bg-black/40 border-2 border-[#120F0D]">
                     <img
                       src={weddingData.groom.photo}
                       alt={weddingData.groom.name}
-                      className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>
                 </div>

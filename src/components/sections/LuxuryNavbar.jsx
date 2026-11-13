@@ -17,13 +17,12 @@ export default function LuxuryNavbar({ weddingData }) {
   const navLinks = [
     { label: "Our Story", href: "#story" },
     { label: "The Couple", href: "#couple" },
-    { label: "Family Tree", href: "#family-tree" },
     { label: "Celebrations", href: "#events" },
+    { label: "Family Tree", href: "#family-tree" },
     { label: "Countdown", href: "#countdown" },
     { label: "Venue", href: "#venue" },
-    { label: "Gallery", href: "#gallery" },
     { label: "Presence", href: "#presence" },
-    { label: "Digital Pass", href: "#pass" },
+    { label: "Send Wishes", href: "#wishes" },
   ];
 
   const handleLinkClick = (e, href) => {

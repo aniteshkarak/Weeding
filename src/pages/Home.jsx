@@ -5,13 +5,12 @@ import LuxuryNavbar from '../components/sections/LuxuryNavbar';
 import HeroSection from '../components/sections/HeroSection';
 import BlessingsSection from '../components/sections/BlessingsSection';
 import CoupleSection from '../components/sections/CoupleSection';
-import FamilyTreeSection from '../components/sections/FamilyTreeSection';
 import EventsSection from '../components/sections/EventsSection';
+import FamilyTreeSection from '../components/sections/FamilyTreeSection';
 import CountdownSection from '../components/sections/CountdownSection';
 import VenueSection from '../components/sections/VenueSection';
-import GallerySection from '../components/sections/GallerySection';
 import PresenceSection from '../components/sections/PresenceSection';
-import DigitalPassSection from '../components/sections/DigitalPassSection';
+import GuestWishesSection from '../components/sections/GuestWishesSection';
 import FooterSection from '../components/sections/FooterSection';
 import { weddingData } from '../data/weddingData';
 
@@ -29,16 +28,32 @@ export default function Home() {
 
       {/* Main 3D Scrolling Content Sections */}
       <main className="relative z-20 flex flex-col w-full">
+        {/* 1. Grand Hero Section */}
         <HeroSection weddingData={weddingData} />
+
+        {/* 2. Family Blessings */}
         <BlessingsSection weddingData={weddingData} />
+
+        {/* 3. The Couple Spotlight */}
         <CoupleSection weddingData={weddingData} />
-        <FamilyTreeSection weddingData={weddingData} />
+
+        {/* 4. Wedding Festivities (Comes FIRST as requested) */}
         <EventsSection weddingData={weddingData} />
+
+        {/* 5. Family Heritage Tree (Comes THEN as requested) */}
+        <FamilyTreeSection weddingData={weddingData} />
+
+        {/* 6. Live Countdown */}
         <CountdownSection weddingData={weddingData} />
+
+        {/* 7. The Venue & Interactive Map */}
         <VenueSection weddingData={weddingData} />
-        <GallerySection weddingData={weddingData} />
+
+        {/* 8. Heartfelt Presence Appeal */}
         <PresenceSection weddingData={weddingData} />
-        <DigitalPassSection weddingData={weddingData} />
+
+        {/* 9. Guest Wishes & Blessings (Replaced Digital Pass) */}
+        <GuestWishesSection weddingData={weddingData} />
       </main>
 
       {/* Grand Footer */}
