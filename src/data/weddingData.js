@@ -123,5 +123,58 @@ export const weddingData = {
     title: "Mere Yaar Ki Shaadi Hai",
     youtubeId: "guHHhEUYAQ4",
     url: "https://youtu.be/guHHhEUYAQ4"
+  },
+
+  // Family Lineage & Heritage Tree
+  familyTree: {
+    brideTree: {
+      surname: "Biswas",
+      title: "The Biswas Family Lineage",
+      address: "Kharida, Kharagpur, Paschim Medinipur, West Bengal",
+      parents: [
+        {
+          id: "bride-mother",
+          name: "Smt. Shashi Kala Biswas",
+          relation: "Mother of the Bride",
+          description: "Loving mother, carrying forward timeless family values and heritage"
+        }
+      ],
+      member: {
+        name: "Priyanka",
+        role: "The Bride",
+        title: "Beloved Daughter",
+        photo: "/images/couple/bride.jpg"
+      }
+    },
+    groomTree: {
+      surname: "Molla",
+      title: "The Molla Family Lineage",
+      address: "Puratan Bazar, Sanjoal, Kharagpur, Paschim Medinipur, West Bengal",
+      parents: [
+        {
+          id: "groom-father",
+          name: "Mr. Abul Kashem Molla",
+          relation: "Father of the Groom",
+          description: "Respected father, guiding with honor and timeless principles"
+        },
+        {
+          id: "groom-mother",
+          name: "Mrs. Fatema Molla",
+          relation: "Mother of the Groom",
+          description: "Loving mother, blessing with grace, warmth and affection"
+        }
+      ],
+      member: {
+        name: "Reon",
+        role: "The Groom",
+        title: "Beloved Son",
+        photo: "/images/couple/groom.jpg"
+      }
+    },
+    union: {
+      title: "The Sacred Union of Two Families",
+      quote: "Two distinct roots uniting into one blossoming tree of love, respect and shared blessings.",
+      hashtag: "#PriyankaWedsReon"
+    }
   }
 };

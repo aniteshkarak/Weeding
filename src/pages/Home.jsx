@@ -5,6 +5,7 @@ import LuxuryNavbar from '../components/sections/LuxuryNavbar';
 import HeroSection from '../components/sections/HeroSection';
 import BlessingsSection from '../components/sections/BlessingsSection';
 import CoupleSection from '../components/sections/CoupleSection';
+import FamilyTreeSection from '../components/sections/FamilyTreeSection';
 import EventsSection from '../components/sections/EventsSection';
 import CountdownSection from '../components/sections/CountdownSection';
 import VenueSection from '../components/sections/VenueSection';
@@ -31,6 +32,7 @@ export default function Home() {
         <HeroSection weddingData={weddingData} />
         <BlessingsSection weddingData={weddingData} />
         <CoupleSection weddingData={weddingData} />
+        <FamilyTreeSection weddingData={weddingData} />
         <EventsSection weddingData={weddingData} />
         <CountdownSection weddingData={weddingData} />
         <VenueSection weddingData={weddingData} />
