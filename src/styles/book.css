@@ -1,0 +1,127 @@
+/* ========================================================
+   3D REALISTIC BOOK & STPAGEFLIP STYLES
+   ======================================================== */
+
+.flip-book-wrapper {
+  perspective: 2500px;
+  transform-style: preserve-3d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* StPageFlip Main Element */
+.stf__parent {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  transform-style: preserve-3d;
+}
+
+.stf__wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.stf__block {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.stf__item {
+  position: absolute;
+  display: block;
+  box-sizing: border-box;
+  overflow: hidden;
+  background-color: #FFFDF8;
+}
+
+/* Page Shadow and Bend Effects */
+.stf__item.--hard {
+  background-color: #241D17 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.stf__item.--soft {
+  background-color: #FFFDF8;
+}
+
+/* Hardcover outer border & 3D bevel */
+.book-hardcover {
+  box-shadow: 
+    -10px 0 20px rgba(0, 0, 0, 0.5),
+    0 15px 40px rgba(0, 0, 0, 0.4),
+    inset 0 0 15px rgba(182, 154, 101, 0.15),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.1);
+  border-radius: 4px 12px 12px 4px;
+}
+
+.book-hardcover-back {
+  box-shadow: 
+    10px 0 20px rgba(0, 0, 0, 0.5),
+    0 15px 40px rgba(0, 0, 0, 0.4),
+    inset 0 0 15px rgba(182, 154, 101, 0.15);
+  border-radius: 12px 4px 4px 12px;
+}
+
+/* Left Page Inner Spine Shadow (Center Crease) */
+.page-left-shadow {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 38px;
+  background: linear-gradient(to left, rgba(41, 37, 31, 0.22) 0%, rgba(41, 37, 31, 0.05) 50%, transparent 100%);
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Right Page Inner Spine Shadow (Center Crease) */
+.page-right-shadow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 38px;
+  background: linear-gradient(to right, rgba(41, 37, 31, 0.22) 0%, rgba(41, 37, 31, 0.05) 50%, transparent 100%);
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Page Edge Realistic Thickness Illusion */
+.page-edge-left {
+  box-shadow: inset 4px 0 6px -2px rgba(41, 37, 31, 0.08);
+}
+
+.page-edge-right {
+  box-shadow: inset -4px 0 6px -2px rgba(41, 37, 31, 0.08);
+}
+
+/* Gold Embossed Accent */
+.gold-emboss {
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6), 0 -1px 1px rgba(0, 0, 0, 0.4);
+}
+
+/* Book Depth Rim */
+.book-rim {
+  position: absolute;
+  bottom: -6px;
+  left: 4px;
+  right: 4px;
+  height: 8px;
+  background: repeating-linear-gradient(
+    90deg,
+    #E9DFCE,
+    #E9DFCE 2px,
+    #D5C5AC 2px,
+    #D5C5AC 4px
+  );
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+}
+

@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-ivory: #F7F3EB;
+  --color-cream: #FFFDF8;
+  --color-champagne: #E9DFCE;
+  --color-gold: #B69A65;
+  --color-gold-light: #D4BE8D;
+  --color-gold-dark: #8C713F;
+  --color-brown: #29251F;
+  --color-muted: #81786B;
+}
+
+/* Custom Scrollbar for Luxury Aesthetics */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1C1916;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #8C713F;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #B69A65;
+}
+
+/* Base Body Styles */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #1C1916;
+  color: #29251F;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  user-select: none;
+}
+
+/* Typography Utility Classes */
+.font-serif-luxury {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+.font-display-luxury {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.font-script {
+  font-family: 'Great Vibes', cursive;
+}
+
+/* Luxury Foil Effects */
+.gold-foil-text {
+  background: linear-gradient(135deg, #A88647 0%, #F5E8C7 35%, #D4BE8D 55%, #8C713F 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+.gold-foil-border {
+  border-image: linear-gradient(135deg, #B69A65, #FFF2D1, #8C713F) 1;
+}
+
+/* Elegant Textured Paper Effect */
+.bg-luxury-paper {
+  background-color: #FFFDF8;
+  background-image: 
+    radial-gradient(#81786B 0.5px, transparent 0.5px),
+    linear-gradient(to bottom, #FFFDF8 0%, #F7F3EB 100%);
+  background-size: 20px 20px, 100% 100%;
+}
+
+.bg-cover-leather {
+  background-color: #241D17;
+  background-image: 
+    radial-gradient(circle at 50% 50%, rgba(182, 154, 101, 0.08) 0%, transparent 80%),
+    linear-gradient(145deg, #2E251E 0%, #1A1410 100%);
+}
+
+/* Realistic Book Spine Effect */
+.book-spine-gradient {
+  background: linear-gradient(
+    90deg, 
+    rgba(0, 0, 0, 0.3) 0%, 
+    rgba(255, 255, 255, 0.1) 20%, 
+    rgba(0, 0, 0, 0.1) 50%, 
+    rgba(0, 0, 0, 0.4) 100%
+  );
+}
+
