@@ -2,11 +2,11 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Volume2, VolumeX, Play, Pause, Music, Disc3, ExternalLink } from 'lucide-react';
 
 export default function MusicPlayer({
-  youtubeId = "guHHhEUYAQ4"
+  youtubeId = "cbXBNkAt4X0"
 }) {
-  // Low ambient sound in background (default 20%)
+  // Ambient romantic sound in background (default 25%)
   const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState(0.20);
+  const [volume, setVolume] = useState(0.25);
   const [isMuted, setIsMuted] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isReady, setIsReady] = useState(false);
@@ -16,7 +16,7 @@ export default function MusicPlayer({
   const isPlayingRef = useRef(false);
   const timerIntervalRef = useRef(null);
 
-  // Tracks strictly whether the USER clicked the off / pause button
+  // STRICT USER INTENT: Tracks whether the user deliberately clicked the OFF/PAUSE button
   const isUserExplicitlyPausedRef = useRef(
     typeof window !== 'undefined' && localStorage.getItem('wedding_music_user_paused') === 'true'
   );
@@ -87,7 +87,7 @@ export default function MusicPlayer({
     }
   }, [isMuted, volume, startPositionSaving]);
 
-  // Pause explicitly by user clicking off button
+  // Pause ONLY when user explicitly clicks the OFF button
   const pausePlayback = useCallback(() => {
     isUserExplicitlyPausedRef.current = true;
     localStorage.setItem('wedding_music_user_paused', 'true');
@@ -105,7 +105,7 @@ export default function MusicPlayer({
     stopPositionSaving();
   }, [stopPositionSaving]);
 
-  // Load YouTube IFrame API and initialize player for "Mere Yaar Ki Shaadi Hai"
+  // Load YouTube IFrame API and initialize player for "https://youtu.be/cbXBNkAt4X0"
   useEffect(() => {
     if (!window.YT) {
       const tag = document.createElement('script');
@@ -118,7 +118,7 @@ export default function MusicPlayer({
       playerRef.current = event.target;
       setIsReady(true);
       
-      // Set requested low volume (20%)
+      // Set requested ambient volume
       event.target.setVolume(isMuted ? 0 : Math.round(volume * 100));
 
       // Retrieve saved timestamp across refresh
@@ -129,18 +129,21 @@ export default function MusicPlayer({
         setCurrentTimeDisplay(savedTime);
       }
 
-      // Check if user previously paused the music
+      // Check if user previously explicitly turned off music
       const isUserPaused = isUserExplicitlyPausedRef.current || localStorage.getItem('wedding_music_user_paused') === 'true';
 
-      // Auto-play on load or refresh if not explicitly paused by user
+      // Auto-play automatically as soon as user enters the page
       if (!isUserPaused) {
         try {
           event.target.playVideo();
+          setIsPlaying(true);
         } catch (e) {}
 
-        // In case the browser blocks autoplay before any user gesture after a fresh page load/refresh,
-        // attach a ONE-TIME user gesture listener that unlocks playback on the first interaction and disappears.
-        const handleFirstUserGesture = (e) => {
+        // In mobile browsers (which require a user gesture for unmuted playback),
+        // trigger playback on the very first touch / interaction anywhere on the screen,
+        // and then IMMEDIATELY remove the listener so subsequent touches cannot affect playback!
+        const unlockAudioOnEnter = (e) => {
+          // If clicked inside the music widget itself, let the widget handle it
           if (e.target && e.target.closest('#wedding-music-widget')) return;
           if (isUserExplicitlyPausedRef.current || localStorage.getItem('wedding_music_user_paused') === 'true') return;
 
@@ -151,12 +154,14 @@ export default function MusicPlayer({
             }
             if (typeof playerRef.current.playVideo === 'function') {
               playerRef.current.playVideo();
+              setIsPlaying(true);
             }
           }
         };
 
-        window.addEventListener('click', handleFirstUserGesture, { once: true });
-        window.addEventListener('touchend', handleFirstUserGesture, { once: true });
+        window.addEventListener('touchstart', unlockAudioOnEnter, { passive: true, once: true });
+        window.addEventListener('click', unlockAudioOnEnter, { once: true });
+        window.addEventListener('scroll', unlockAudioOnEnter, { passive: true, once: true });
       }
     };
 
@@ -165,11 +170,12 @@ export default function MusicPlayer({
         setIsPlaying(true);
         startPositionSaving();
       } else if (event.data === window.YT.PlayerState.PAUSED) {
-        // STRICT USER CONTROL: ONLY when user clicked OFF button does it stay off!
+        // STRICT USER CONTROL: ONLY when user clicked the OFF button does it stay paused!
+        // If the user touched the screen, swiped, or browser shifted, KEEP PLAYING!
         const isUserPaused = isUserExplicitlyPausedRef.current || localStorage.getItem('wedding_music_user_paused') === 'true';
         if (!isUserPaused) {
-          // Unintentional interruption (e.g. mobile swipe, browser glitch, address bar hide)
-          // Immediately resume playback so music NEVER cuts off during swiping!
+          // Unintentional interruption / mobile touch / swipe
+          // Auto-resume immediately!
           setIsPlaying(true);
           setTimeout(() => {
             if (!isUserExplicitlyPausedRef.current && localStorage.getItem('wedding_music_user_paused') !== 'true') {
@@ -181,7 +187,7 @@ export default function MusicPlayer({
             }
           }, 80);
         } else {
-          // Genuine user click on off/pause button
+          // Deliberate user pause via OFF button
           setIsPlaying(false);
           stopPositionSaving();
         }
@@ -200,7 +206,7 @@ export default function MusicPlayer({
           width: '10',
           videoId: youtubeId,
           playerVars: {
-            autoplay: 0,
+            autoplay: 1,
             controls: 0,
             disablekb: 1,
             enablejsapi: 1,
@@ -248,7 +254,7 @@ export default function MusicPlayer({
     };
   }, [youtubeId, isMuted, volume, startPositionSaving, stopPositionSaving]);
 
-  // Background Watchdog: If music was interrupted on mobile without user clicking off, revive it automatically
+  // Background Watchdog: Continuously checks if music was interrupted without user clicking off, revives it automatically
   useEffect(() => {
     const watchdog = setInterval(() => {
       const isUserPaused = isUserExplicitlyPausedRef.current || localStorage.getItem('wedding_music_user_paused') === 'true';
@@ -284,20 +290,6 @@ export default function MusicPlayer({
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, []);
-
-  // Listen for the "wedding-play-music" event triggered when user clicks "OPEN INVITATION"
-  useEffect(() => {
-    const handleInvitationOpenEvent = () => {
-      isUserExplicitlyPausedRef.current = false;
-      localStorage.setItem('wedding_music_user_paused', 'false');
-      playFromSavedPosition();
-    };
-
-    window.addEventListener('wedding-play-music', handleInvitationOpenEvent);
-    return () => {
-      window.removeEventListener('wedding-play-music', handleInvitationOpenEvent);
-    };
-  }, [playFromSavedPosition]);
 
   // Toggle Play / Pause exclusively via user clicking the floating control button
   const togglePlay = (e) => {
@@ -355,7 +347,7 @@ export default function MusicPlayer({
           <div className="flex flex-col text-left">
             <div className="flex items-center gap-1.5">
               <span className="text-[11px] text-cream font-serif-luxury font-medium tracking-wider whitespace-nowrap">
-                Mere Yaar Ki Shaadi Hai
+                Romantic Wedding Theme
               </span>
               <a
                 href={`https://youtu.be/${youtubeId}`}
@@ -369,7 +361,7 @@ export default function MusicPlayer({
               </a>
             </div>
             <span className="text-[9px] text-gold-light/80 font-sans tracking-wide">
-              {currentTimeDisplay > 0 ? `Playing at ${formatSeconds(currentTimeDisplay)} · Low Sound` : 'Low Sound Background'}
+              {currentTimeDisplay > 0 ? `Playing at ${formatSeconds(currentTimeDisplay)} · Soft Sound` : 'Romantic Wedding Melodies'}
             </span>
           </div>
 
@@ -410,7 +402,7 @@ export default function MusicPlayer({
               ? 'bg-gradient-to-tr from-gold-dark via-gold to-gold-light text-brown border-2 border-white/60 animate-pulse-glow'
               : 'bg-brown-dark text-gold border border-gold/50 hover:border-gold'
           }`}
-          title={isPlaying ? "Pause Music (Off)" : "Play Music (On)"}
+          title={isPlaying ? "Turn Off Music" : "Turn On Music"}
         >
           {isPlaying ? (
             <div className="relative flex items-center justify-center">

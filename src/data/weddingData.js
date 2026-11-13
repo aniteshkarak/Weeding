@@ -118,11 +118,11 @@ export const weddingData = {
     }
   ],
 
-  // ONLY ONE song as specified: "https://youtu.be/guHHhEUYAQ4"
+  // ONLY ONE song as specified: "https://youtu.be/cbXBNkAt4X0"
   song: {
-    title: "Mere Yaar Ki Shaadi Hai",
-    youtubeId: "guHHhEUYAQ4",
-    url: "https://youtu.be/guHHhEUYAQ4"
+    title: "Romantic Wedding Theme",
+    youtubeId: "cbXBNkAt4X0",
+    url: "https://youtu.be/cbXBNkAt4X0"
   },
 
   // Family Lineage & Heritage Tree
