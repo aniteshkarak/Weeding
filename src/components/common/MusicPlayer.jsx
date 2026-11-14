@@ -16,10 +16,9 @@ export default function MusicPlayer({
   const isPlayingRef = useRef(false);
   const timerIntervalRef = useRef(null);
 
-  // STRICT USER INTENT: Tracks whether the user deliberately clicked the OFF/PAUSE button
-  const isUserExplicitlyPausedRef = useRef(
-    typeof window !== 'undefined' && localStorage.getItem('wedding_music_user_paused') === 'true'
-  );
+  // STRICT USER INTENT: ONLY becomes true when the user explicitly taps the OFF button
+  // Always starts as false for fresh website visits so music plays automatically!
+  const isUserExplicitlyPausedRef = useRef(false);
 
   // Sync isPlayingRef with state
   useEffect(() => {
@@ -62,10 +61,13 @@ export default function MusicPlayer({
     if (!playerRef.current) return;
     try {
       isUserExplicitlyPausedRef.current = false;
-      localStorage.setItem('wedding_music_user_paused', 'false');
 
       const savedTimeStr = localStorage.getItem('wedding_song_time');
       const savedTime = parseFloat(savedTimeStr || '0');
+
+      if (typeof playerRef.current.unMute === 'function') {
+        playerRef.current.unMute();
+      }
 
       if (typeof playerRef.current.setVolume === 'function') {
         playerRef.current.setVolume(isMuted ? 0 : Math.round(volume * 100));
@@ -90,7 +92,6 @@ export default function MusicPlayer({
   // Pause ONLY when user explicitly clicks the OFF button
   const pausePlayback = useCallback(() => {
     isUserExplicitlyPausedRef.current = true;
-    localStorage.setItem('wedding_music_user_paused', 'true');
 
     if (playerRef.current && typeof playerRef.current.pauseVideo === 'function') {
       try {
@@ -107,6 +108,12 @@ export default function MusicPlayer({
 
   // Load YouTube IFrame API and initialize player for "https://youtu.be/cbXBNkAt4X0"
   useEffect(() => {
+    // Clear any old manual pause flag from previous sessions so every open attempts automatic play
+    try {
+      localStorage.removeItem('wedding_music_user_paused');
+    } catch (e) {}
+    isUserExplicitlyPausedRef.current = false;
+
     if (!window.YT) {
       const tag = document.createElement('script');
       tag.src = "https://www.youtube.com/iframe_api";
@@ -117,8 +124,8 @@ export default function MusicPlayer({
     const onPlayerReady = (event) => {
       playerRef.current = event.target;
       setIsReady(true);
-      
-      // Set requested ambient volume
+
+      // Set ambient volume
       event.target.setVolume(isMuted ? 0 : Math.round(volume * 100));
 
       // Retrieve saved timestamp across refresh
@@ -129,25 +136,29 @@ export default function MusicPlayer({
         setCurrentTimeDisplay(savedTime);
       }
 
-      // Check if user previously explicitly turned off music
-      const isUserPaused = isUserExplicitlyPausedRef.current || localStorage.getItem('wedding_music_user_paused') === 'true';
+      // 1. Direct Autoplay attempt on page entry
+      try {
+        event.target.playVideo();
+        setIsPlaying(true);
+      } catch (e) {}
 
-      // Auto-play automatically as soon as user enters the page
-      if (!isUserPaused) {
-        try {
-          event.target.playVideo();
-          setIsPlaying(true);
-        } catch (e) {}
+      // 2. Mobile & Strict Browser Autoplay Policy Fallback:
+      // If the browser blocks zero-click unmuted playback on fresh load,
+      // the very first interaction (tap, scroll, touch) ANYWHERE on the screen
+      // immediately triggers unmuted audio playback, and then unbinds itself!
+      const unlockAudioOnFirstInteraction = (e) => {
+        // If clicked inside the music widget itself, let widget handler take it
+        if (e.target && e.target.closest('#wedding-music-widget')) return;
+        if (isUserExplicitlyPausedRef.current) return;
 
-        // In mobile browsers (which require a user gesture for unmuted playback),
-        // trigger playback on the very first touch / interaction anywhere on the screen,
-        // and then IMMEDIATELY remove the listener so subsequent touches cannot affect playback!
-        const unlockAudioOnEnter = (e) => {
-          // If clicked inside the music widget itself, let the widget handle it
-          if (e.target && e.target.closest('#wedding-music-widget')) return;
-          if (isUserExplicitlyPausedRef.current || localStorage.getItem('wedding_music_user_paused') === 'true') return;
-
-          if (playerRef.current && !isPlayingRef.current) {
+        if (playerRef.current && !isPlayingRef.current) {
+          try {
+            if (typeof playerRef.current.unMute === 'function') {
+              playerRef.current.unMute();
+            }
+            if (typeof playerRef.current.setVolume === 'function') {
+              playerRef.current.setVolume(isMuted ? 0 : Math.round(volume * 100));
+            }
             const t = parseFloat(localStorage.getItem('wedding_song_time') || '0');
             if (t > 0 && typeof playerRef.current.seekTo === 'function') {
               playerRef.current.seekTo(t, true);
@@ -156,13 +167,14 @@ export default function MusicPlayer({
               playerRef.current.playVideo();
               setIsPlaying(true);
             }
-          }
-        };
+          } catch (err) {}
+        }
+      };
 
-        window.addEventListener('touchstart', unlockAudioOnEnter, { passive: true, once: true });
-        window.addEventListener('click', unlockAudioOnEnter, { once: true });
-        window.addEventListener('scroll', unlockAudioOnEnter, { passive: true, once: true });
-      }
+      window.addEventListener('touchstart', unlockAudioOnFirstInteraction, { passive: true, once: true });
+      window.addEventListener('pointerdown', unlockAudioOnFirstInteraction, { passive: true, once: true });
+      window.addEventListener('click', unlockAudioOnFirstInteraction, { once: true });
+      window.addEventListener('scroll', unlockAudioOnFirstInteraction, { passive: true, once: true });
     };
 
     const onPlayerStateChange = (event) => {
@@ -172,13 +184,12 @@ export default function MusicPlayer({
       } else if (event.data === window.YT.PlayerState.PAUSED) {
         // STRICT USER CONTROL: ONLY when user clicked the OFF button does it stay paused!
         // If the user touched the screen, swiped, or browser shifted, KEEP PLAYING!
-        const isUserPaused = isUserExplicitlyPausedRef.current || localStorage.getItem('wedding_music_user_paused') === 'true';
-        if (!isUserPaused) {
+        if (!isUserExplicitlyPausedRef.current) {
           // Unintentional interruption / mobile touch / swipe
           // Auto-resume immediately!
           setIsPlaying(true);
           setTimeout(() => {
-            if (!isUserExplicitlyPausedRef.current && localStorage.getItem('wedding_music_user_paused') !== 'true') {
+            if (!isUserExplicitlyPausedRef.current) {
               try {
                 if (playerRef.current && typeof playerRef.current.playVideo === 'function') {
                   playerRef.current.playVideo();
@@ -202,8 +213,8 @@ export default function MusicPlayer({
     const createPlayer = () => {
       try {
         new window.YT.Player('yt-single-audio-player', {
-          height: '10',
-          width: '10',
+          height: '200',
+          width: '200',
           videoId: youtubeId,
           playerVars: {
             autoplay: 1,
@@ -257,11 +268,10 @@ export default function MusicPlayer({
   // Background Watchdog: Continuously checks if music was interrupted without user clicking off, revives it automatically
   useEffect(() => {
     const watchdog = setInterval(() => {
-      const isUserPaused = isUserExplicitlyPausedRef.current || localStorage.getItem('wedding_music_user_paused') === 'true';
-      if (!isUserPaused && playerRef.current && typeof playerRef.current.getPlayerState === 'function') {
+      if (!isUserExplicitlyPausedRef.current && playerRef.current && typeof playerRef.current.getPlayerState === 'function') {
         try {
           const state = playerRef.current.getPlayerState();
-          // State 2 = PAUSED, 5 = CUED
+          // State 2 = PAUSED, 5 = CUED, -1 = UNSTARTED
           if (state === 2 || state === 5) {
             playerRef.current.playVideo();
             setIsPlaying(true);
@@ -277,8 +287,7 @@ export default function MusicPlayer({
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
-        const isUserPaused = isUserExplicitlyPausedRef.current || localStorage.getItem('wedding_music_user_paused') === 'true';
-        if (!isUserPaused && playerRef.current && typeof playerRef.current.playVideo === 'function') {
+        if (!isUserExplicitlyPausedRef.current && playerRef.current && typeof playerRef.current.playVideo === 'function') {
           try {
             playerRef.current.playVideo();
             setIsPlaying(true);
@@ -298,7 +307,6 @@ export default function MusicPlayer({
       pausePlayback();
     } else {
       isUserExplicitlyPausedRef.current = false;
-      localStorage.setItem('wedding_music_user_paused', 'false');
       playFromSavedPosition();
     }
   };
@@ -335,10 +343,10 @@ export default function MusicPlayer({
       className="fixed bottom-3 right-3 sm:bottom-5 sm:right-5 z-50 flex items-center select-none"
       onClick={(e) => e.stopPropagation()}
     >
-      {/* Hidden YouTube IFrame Target */}
+      {/* Active Viewport YouTube IFrame Target (Prevents Chrome from throttling hidden offscreen media) */}
       <div 
         id="yt-single-audio-player" 
-        className="fixed -left-[9999px] -top-[9999px] w-1 h-1 opacity-0 pointer-events-none" 
+        className="fixed bottom-0 right-0 w-[200px] h-[200px] opacity-[0.001] pointer-events-none z-[-1] overflow-hidden" 
       />
 
       {/* Expanded Control Box */}
@@ -393,14 +401,24 @@ export default function MusicPlayer({
       )}
 
       {/* Main Floating Button */}
-      <div className="relative group">
+      <div className="relative group flex items-center">
+        {/* Subtle Hint Pill if waiting for first gesture */}
+        {!isPlaying && (
+          <div 
+            onClick={togglePlay}
+            className="mr-2 px-3 py-1 rounded-full bg-gold/90 text-brown-deep text-[10px] font-sans font-semibold tracking-wider uppercase shadow-gold-glow animate-pulse cursor-pointer hidden sm:block whitespace-nowrap"
+          >
+            🎵 Tap for Music
+          </div>
+        )}
+
         <button
           onClick={togglePlay}
           onMouseEnter={() => setIsExpanded(true)}
           className={`w-11 h-11 sm:w-13 sm:h-13 rounded-full flex items-center justify-center transition-all duration-300 shadow-book ${
             isPlaying
               ? 'bg-gradient-to-tr from-gold-dark via-gold to-gold-light text-brown border-2 border-white/60 animate-pulse-glow'
-              : 'bg-brown-dark text-gold border border-gold/50 hover:border-gold'
+              : 'bg-brown-dark text-gold border border-gold/50 hover:border-gold animate-bounce'
           }`}
           title={isPlaying ? "Turn Off Music" : "Turn On Music"}
         >
